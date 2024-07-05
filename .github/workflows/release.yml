@@ -1,0 +1,54 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Setup Go environment
+        uses: actions/setup-go@v5
+        with:
+          go-version: 1.22.0
+
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Make
+        run: make
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: artifacts
+          path: |
+            bin/*
+
+
+  publish-releases:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    needs: release
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+
+      - name: Release
+        uses: ghalactic/github-release-from-tag@v5
+        with:
+          generateReleaseNotes: "true"
+          reactions: +1,laugh,hooray,heart,rocket,eyes
+          assets: |
+            - path: artifacts/*
