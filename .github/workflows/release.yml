@@ -46,7 +46,7 @@ jobs:
         uses: actions/download-artifact@v4
 
       - name: Release
-        uses: ghalactic/github-release-from-tag@v5
+        uses: ghalactic/github-release-from-tag@v6
         with:
           generateReleaseNotes: "true"
           reactions: +1,laugh,hooray,heart,rocket,eyes
